@@ -8,22 +8,41 @@ import java.awt.Graphics;
 import java.util.Arrays;
 
 class Balls extends PApplet{
-    float[] color=new float[4];
-    float radius=random(20,50);
-    float x=random(radius, width-radius);
-    float y=random(radius, height-radius);
-    float speedX=random(1,3);
-    float speedY=random(1,3);
+    float[] color;
+    float radius;
+    float x;
+    float y;
+    float speedX;
+    float speedY;
+    public Balls(){
+        this.color=new float[4];
+        this.radius=random(20,50);
+        this.x=random(radius, width-radius);
+        this.y=random(radius, height-radius);
+        this.speedX=random(1,3);
+        this.speedY=random(1,3);
+    }
 }
 
-public class MovingBalls<balls> extends PApplet{
+public class MovingBalls extends PApplet{
     //float x;
     //float y;
     //float speedX = 3;
     //float speedY = 3;
     //int radius = 20;
 
-    int numOfBalls=30;
+
+    ArrayList<Balls> balls=new ArrayList<>();
+    int numOfBalls=0;
+    public void settings(){
+        size(800, 600);
+        for(int i=0;i<numOfBalls;i++){
+            balls.add(new Balls());
+            balls.get(i).color= new float[]{random(0, 205), random(0, 205), random(0, 205), random(255, 255)};
+        }
+    }
+
+    /*int numOfBalls=30;
     Balls[] balls = new Balls[numOfBalls];
     public void settings(){
         size(800, 600);
@@ -31,7 +50,7 @@ public class MovingBalls<balls> extends PApplet{
             balls[i]=new Balls();
             balls[i].color= new float[]{random(0, 205), random(0, 205), random(0, 205), random(255, 255)};
         }
-    }
+    }*/
 
 
 
@@ -79,25 +98,29 @@ public class MovingBalls<balls> extends PApplet{
         }
     }*/
 
-
+    @Override
+    public void mouseClicked() {
+        balls.add(new Balls());
+        balls.get(balls.size()-1).color=new float[]{random(0, 205), random(0, 205), random(0, 205), random(255, 255)};
+    }
 
     public void draw(){
         //background(255,255,245);
 
         background(255,255,245);
-        for(int i=0;i<numOfBalls;i++){
+        for(int i=0;i<balls.size();i++){
             noStroke();
-            ellipse(balls[i].x,balls[i].y,balls[i].radius+4,balls[i].radius+4);
-            fill(balls[i].color[0],balls[i].color[1],balls[i].color[2],balls[i].color[3]);
-            if((balls[i].x-balls[i].radius)<=0 || (balls[i].x+balls[i].radius)>=width){
-                balls[i].speedX=-balls[i].speedX;
+            ellipse(balls.get(i).x,balls.get(i).y,balls.get(i).radius+4,balls.get(i).radius+4);
+            fill(balls.get(i).color[0],balls.get(i).color[1],balls.get(i).color[2],balls.get(i).color[3]);
+            if((balls.get(i).x-balls.get(i).radius)<=0 || (balls.get(i).x+balls.get(i).radius)>=width){
+                balls.get(i).speedX=-balls.get(i).speedX;
             }
-            if((balls[i].y-balls[i].radius)<=0 || (balls[i].y+balls[i].radius)>=height){
-                balls[i].speedY=-balls[i].speedY;
+            if((balls.get(i).y-balls.get(i).radius)<=0 || (balls.get(i).y+balls.get(i).radius)>=height){
+                balls.get(i).speedY=-balls.get(i).speedY;
             }
-            balls[i].x=balls[i].x+balls[i].speedX;
-            balls[i].y=balls[i].y+balls[i].speedY;
-            DrawLineAssistance(balls[i],balls);
+            balls.get(i).x=balls.get(i).x+balls.get(i).speedX;
+            balls.get(i).y=balls.get(i).y+balls.get(i).speedY;
+            DrawLineAssistance(balls.get(i),balls);
 
 
             /*PShape trapezoid=createShape();
@@ -112,8 +135,6 @@ public class MovingBalls<balls> extends PApplet{
             //trapezoid.strokeWeight(5);
             trapezoid.draw(getGraphics());
             trapezoid.endShape(CLOSE);*/
-
-
         }
 
 
@@ -256,19 +277,19 @@ public class MovingBalls<balls> extends PApplet{
          }
     }
 
-    void DrawLineAssistance(Balls b,Balls[] arrX){
-        for(int i=0;i<arrX.length;i++){
-            float X=(b.x-arrX[i].x)*(b.x-arrX[i].x);
-            float Y=(b.y-arrX[i].y)*(b.y-arrX[i].y);
+    void DrawLineAssistance(Balls b,ArrayList<Balls> arrX){
+        for(int i=0;i<arrX.size();i++){
+            float X=(b.x-arrX.get(i).x)*(b.x-arrX.get(i).x);
+            float Y=(b.y-arrX.get(i).y)*(b.y-arrX.get(i).y);
             if(X+Y<=15000){
-                if(b.radius<arrX[i].radius){
-                    drawTriBetweenBalls(arrX[i],b);
+                if(b.radius<arrX.get(i).radius){
+                    drawTriBetweenBalls(arrX.get(i),b);
                 }
-                if(b.radius>arrX[i].radius){
-                    drawTriBetweenBalls(b,arrX[i]);
+                if(b.radius>arrX.get(i).radius){
+                    drawTriBetweenBalls(b,arrX.get(i));
                 }
-                if(b.radius==arrX[i].radius){
-                    line(b.x,b.y,arrX[i].x,arrX[i].y);
+                if(b.radius==arrX.get(i).radius){
+                    line(b.x,b.y,arrX.get(i).x,arrX.get(i).y);
                     //stroke(b.color[0],b.color[1],b.color[2],b.color[3]);
                     strokeWeight((float) (0.2*b.radius));
                 }
@@ -317,19 +338,6 @@ public class MovingBalls<balls> extends PApplet{
 
             i++;
         }*/
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
